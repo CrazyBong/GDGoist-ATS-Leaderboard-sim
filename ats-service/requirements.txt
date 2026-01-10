@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+pydantic
+pdfminer.six
+python-docx
+scikit-learn
+numpy
+sentence-transformers
+nltk
+
