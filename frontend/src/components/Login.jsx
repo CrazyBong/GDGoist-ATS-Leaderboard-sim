@@ -16,36 +16,52 @@ export default function Login() {
     setError('')
 
     const result = await login(email, password)
-    
+
     if (result.success) {
       navigate('/dashboard')
     } else {
       setError(result.error)
     }
-    
+
     setLoading(false)
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-900 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">
-            Sign in to your account
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600 dark:text-slate-400">
-            GDGoist ATS Leaderboard
+    <div className="min-h-screen flex items-center justify-center px-4 py-12" style={{ backgroundColor: 'var(--bg-primary)' }}>
+      <div className="w-full max-w-md">
+        {/* Header Section */}
+        <div className="text-center mb-10 animate-fadeIn">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-6" style={{ backgroundColor: 'rgba(132, 89, 43, 0.1)', border: '1px solid rgba(132, 89, 43, 0.2)' }}>
+            <svg className="w-8 h-8" style={{ color: '#84592B' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h1 className="text-heading mb-3" style={{ color: 'var(--text-primary)' }}>
+            Welcome back
+          </h1>
+          <p className="text-body" style={{ color: 'var(--text-muted)' }}>
+            Sign in to access your employability dashboard
           </p>
         </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          {error && (
-            <div className="bg-red-50 dark:bg-slate-800 border border-red-200 dark:border-red-900 text-red-600 dark:text-red-400 px-4 py-3 rounded">
-              {error}
-            </div>
-          )}
-          <div className="rounded-md shadow-sm -space-y-px">
+
+        {/* Login Form */}
+        <div className="card-elevated animate-scaleIn" style={{ animationDelay: '0.1s' }}>
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {/* Error Message */}
+            {error && (
+              <div className="error-message animate-fadeIn">
+                <div className="flex items-start">
+                  <svg className="w-5 h-5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                  </svg>
+                  <span>{error}</span>
+                </div>
+              </div>
+            )}
+
+            {/* Email Input */}
             <div>
-              <label htmlFor="email" className="sr-only">
+              <label htmlFor="email" className="label-premium">
                 Email address
               </label>
               <input
@@ -54,14 +70,16 @@ export default function Login() {
                 type="email"
                 autoComplete="email"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 dark:border-slate-600 placeholder-gray-500 dark:placeholder-slate-400 text-gray-900 dark:text-white dark:bg-slate-800 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                placeholder="Email address"
+                className="input-premium"
+                placeholder="you@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
+
+            {/* Password Input */}
             <div>
-              <label htmlFor="password" className="sr-only">
+              <label htmlFor="password" className="label-premium">
                 Password
               </label>
               <input
@@ -70,33 +88,54 @@ export default function Login() {
                 type="password"
                 autoComplete="current-password"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 dark:border-slate-600 placeholder-gray-500 dark:placeholder-slate-400 text-gray-900 dark:text-white dark:bg-slate-800 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                placeholder="Password"
+                className="input-premium"
+                placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
-          </div>
 
-          <div>
+            {/* Submit Button */}
             <button
               type="submit"
               disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-slate-900 disabled:opacity-50"
+              className="btn-primary w-full focus-ring disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'Signing in...' : 'Sign in'}
+              {loading ? (
+                <span className="flex items-center justify-center">
+                  <span className="spinner-premium mr-2"></span>
+                  Signing in...
+                </span>
+              ) : (
+                'Sign in'
+              )}
             </button>
-          </div>
+          </form>
 
+          {/* Divider */}
+          <div className="divider-premium"></div>
+
+          {/* Sign Up Link */}
           <div className="text-center">
-            <Link
-              to="/register"
-              className="font-medium text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300"
-            >
-              Don't have an account? Sign up
-            </Link>
+            <p className="text-small" style={{ color: 'var(--text-muted)' }}>
+              Don't have an account?{' '}
+              <Link
+                to="/register"
+                className="font-semibold hover:underline"
+                style={{ color: '#84592B' }}
+              >
+                Create one
+              </Link>
+            </p>
           </div>
-        </form>
+        </div>
+
+        {/* Footer Note */}
+        <div className="mt-8 text-center animate-fadeIn" style={{ animationDelay: '0.2s' }}>
+          <p className="text-small" style={{ color: 'var(--text-muted)' }}>
+            GDGoist ATS Leaderboard · Track your career readiness
+          </p>
+        </div>
       </div>
     </div>
   )
