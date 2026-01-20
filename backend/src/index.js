@@ -412,7 +412,15 @@ app.put('/me/profile', verifyToken, async (req, res) => {
     const user = await User.findByIdAndUpdate(req.user.id, { $set: updates }, { new: true }).select('-passwordHash')
     if (!user) return res.status(404).json({ error: 'User not found' })
 
-    console.log(`[Profile] Updated profile for user ${user.email}`)
+    // SYNC: Recalculate score (updates User model cache) and clear analytics cache
+    try {
+      await recalculateUserScore(user._id)
+      analyticsCache.clear()
+    } catch (scoreErr) {
+      console.error('[Profile] Score/Cache sync error:', scoreErr.message)
+    }
+
+    console.log(`[Profile] Updated profile for user ${user.email} and cleared cache`)
     return res.json({
       message: 'Profile updated successfully',
       profile: {
@@ -505,6 +513,9 @@ app.post('/me/avatar', verifyToken, async (req, res) => {
       { profilePicture: fileUrl },
       { new: true }
     ).select('-passwordHash')
+
+    // SYNC: Clear cache for Admin visibility
+    analyticsCache.clear()
 
     return res.json({
       message: 'Avatar uploaded successfully',
@@ -612,7 +623,7 @@ const {
   getAuditLogs,
   exportUserData
 } = require('./privacyService')
-const { withCache } = require('./analyticsCache')
+const { withCache, analyticsCache } = require('./analyticsCache')
 const { generalLimiter, authLimiter, adminLimiter, uploadLimiter } = require('./middleware/rateLimit')
 
 // Generate a pre-signed upload URL for a resume (PUT). Returns resume metadata record and upload URL.
@@ -763,6 +774,10 @@ const crypto = require('crypto')
 // Public leaderboard (anonymous-by-default)
 // Query params: department, graduationYear, limit, page
 app.get('/leaderboard', async (req, res) => {
+  // Prevent browser caching of leaderboard data to show fresh syncs
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
+  res.setHeader('Pragma', 'no-cache')
+  res.setHeader('Expires', '0')
   try {
     const { department, graduationYear, limit = 50, page = 1 } = req.query
     const pageNum = Math.max(1, parseInt(page, 10) || 1)

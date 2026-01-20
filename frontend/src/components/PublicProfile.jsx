@@ -146,6 +146,11 @@ export default function PublicProfile() {
                                         Twitter
                                     </a>
                                 )}
+                                {profile.socialLinks.instagram && (
+                                    <a href={profile.socialLinks.instagram} target="_blank" rel="noopener noreferrer" className="px-4 py-2" style={{ backgroundColor: 'var(--bg-card-soft)', borderRadius: 'var(--radius-lg)', color: 'var(--text-secondary)' }}>
+                                        Instagram
+                                    </a>
+                                )}
                                 {profile.socialLinks.portfolio && (
                                     <a href={profile.socialLinks.portfolio} target="_blank" rel="noopener noreferrer" className="px-4 py-2" style={{ backgroundColor: 'var(--bg-card-soft)', borderRadius: 'var(--radius-lg)', color: 'var(--text-secondary)' }}>
                                         Portfolio
